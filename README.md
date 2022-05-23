@@ -80,7 +80,7 @@ virtualbox:
 ```
 
 ## Create an alias for vagrant commands
-If you find it a little annoying to always have to go back to the directory were the `Vagrantfile` is stored, considering adding an alias to always run vagrant from that same place:
+If you find it a little annoying to always have to go back to the directory were the `Vagrantfile` is stored, consider adding an alias to always run vagrant from that same place:
 ```bash
 alias beggar="VAGRANT_CWD=<path-to-repo> vagrant"
 ```
