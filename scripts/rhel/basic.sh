@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e
 dnf -y update
-dnf -y install make nano jq wget golang kernel-devel
+dnf -y install make nano jq wget golang kernel-devel origin-clients
