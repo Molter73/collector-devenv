@@ -7,7 +7,7 @@ Some people might argue Docker Desktop to be a simpler solution, I just like hav
 # vagrant up
 The repo is based around `Vagrantfile` and the `provision.yml` file. You will need to install both [vagrant](https://www.vagrantup.com/docs/installation) as well as a VM client , I use [virtualbox](https://www.virtualbox.org/wiki/Downloads), but the main Fedora image being used also supports `libvirt`. `ansible` is also required in your host, so go over to [Installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html) and get it setup.
 
-Running `vagrant up` in the root of the directory will download and spin up the Fedora 35 VM. Once it's done, the `provision.yml` playbook will be executed and you will have `docker` and `k3s` installed in them, congratulations!
+Running `vagrant up fedora` in the root of the directory will download and spin up the Fedora 35 VM. Once it's done, the `provision.yml` playbook will be executed and you will have `docker` and `k3s` installed in them, congratulations!
 
 ## Accessing docker from the host
 Easiest way to access the docker instance running in the VM is to install the docker CLI on your host and create a context for it to SSH into the VM on its own. First, run `vagrant ssh-config` to get the ssh configuration for your VM and paste it into `~/.ssh/config`, you could also just:
