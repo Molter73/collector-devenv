@@ -1,89 +1,57 @@
-require 'yaml'
-
-vms = []
-YAML.load_stream(File.read "#{__dir__}/vagrant.yml") { |doc| vms << doc }
+go_path = ENV['GOPATH']
+home_path = ENV['HOME']
 
 Vagrant.configure("2") do |c|
-	vms.each do |vm|
-		name = vm.keys[0]
+  c.vm.define 'fedora', primary: true do |fedora|
+    fedora.vm.box = 'fedora/35-cloud-base'
+    fedora.vm.hostname = 'fedora'
 
-		primary = false
-		if vm.key?('primary')
-			primary = vm['primary']
-		end
+    fedora.vm.synced_folder "#{go_path}/src/" ,"#{go_path}/src/",
+      type: 'nfs',
+      nfs_udp: false
 
-		c.vm.define vm['name'], primary: primary do |node|
-			node.vm.box = vm['box']
-			node.vm.provider :virtualbox
+    fedora.vm.synced_folder "#{home_path}/artifacts/", "/artifacts/",
+      type: 'nfs',
+      nfs_udp: false
 
-			if vm.key?('box_url')
-				node.vm.box_url = vm['box_url']
-			end
+    fedora.vm.network 'private_network', ip: '192.168.56.10'
 
-			if vm.key?('hostname')
-				node.vm.hostname = vm['hostname']
-			end
+    # VBox specific configuration
+    fedora.vm.provider 'virtualbox' do |vbox|
+      vbox.gui = false
+      vbox.name = 'fedora'
+      vbox.cpus = 6
+      vbox.memory = 8192
+      vbox.customize ['modifyvm', :id, '--groups', '/devenv']
+      vbox.customize ['guestproperty', 'set', :id, '/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold', 1000]
+    end
 
-			if vm.key?('disk')
-				node.vm.disk :disk, size: vm['disk'], primary: true
-			end
+    fedora.vm.provision 'ansible' do |ansible|
+      ansible.playbook = 'provision.yml'
+    end
+  end
 
-			if vm.key?('synced_folder')
-				vm['synced_folder'].each do |sf|
-					if sf.key?('type')
-						if sf['type'] == 'nfs'
-							node.vm.synced_folder sf['src'], sf['dst'], type: 'nfs', nfs_udp: false
-						end
-					else
-						node.vm.synced_folder sf['src'], sf['dst']
-					end
-				end
-			end
+  c.vm.define 'ubuntu' do |ubuntu|
+    ubuntu.vm.box = 'ubuntu/focal64'
+    ubuntu.vm.hostname = 'ubuntu'
 
-			if vm.key?('private_network')
-				vm['private_network'].each do |ip|
-					node.vm.network 'private_network', ip: ip
-				end
-			end
+    ubuntu.vm.synced_folder "#{go_path}/src/" ,"#{go_path}/src/"
+    ubuntu.vm.synced_folder "#{home_path}/artifacts/", "/artifacts/"
 
-			if vm.key?('provision')
-				vm['provision'].each do |name, provision|
-					if provision['type'] == 'shell'
-						options = provision['options']
-						env = {}
-						if options.key?('environment')
-							env = options['environment']
-						end
-						node.vm.provision 'shell', path: options['path'], name: name, env: env
-					end
-				end
-			end
+    ubuntu.vm.network 'private_network', ip: '192.168.56.11'
 
-			# VBox specific configuration
-			node.vm.provider 'virtualbox' do |vbox|
-				vbox.gui = false
+    # VBox specific configuration
+    ubuntu.vm.provider 'virtualbox' do |vbox|
+      vbox.gui = false
+      vbox.name = 'ubuntu'
+      vbox.cpus = 6
+      vbox.memory = 8192
+      vbox.customize ['modifyvm', :id, '--groups', '/devenv']
+      vbox.customize ['guestproperty', 'set', :id, '/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold', 1000]
+    end
 
-				if vm.key?('virtualbox')
-					vbox_config = vm['virtualbox']
-
-					if vbox_config.key?('name')
-						vbox.name = vbox_config['name']
-					end
-
-					if vbox_config.key?('cpus')
-						vbox.cpus = vbox_config['cpus']
-					end
-
-					if vbox_config.key?('memory')
-						vbox.memory = vbox_config['memory']
-					end
-
-					if vbox_config.key?('groups')
-						vbox.customize ['modifyvm', :id, '--groups', vbox_config['groups'].join(',')]
-					end
-					vbox.customize ['guestproperty', 'set', :id, '/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold', 1000]
-				end
-			end
-		end
-	end
+    ubuntu.vm.provision 'ansible' do |ansible|
+      ansible.playbook = 'provision.yml'
+    end
+  end
 end

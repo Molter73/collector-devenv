@@ -1,1 +1,6 @@
 .vagrant/
+k3s.yaml
+
+# If you need to create anything that you don't want to commit into git, you
+# can use the 'ignore' directory
+/ignore/
