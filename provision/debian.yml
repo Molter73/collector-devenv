@@ -1,0 +1,16 @@
+- name: Install utilities
+  apt:
+    name:
+      - make
+      - jq
+      - wget
+      - golang
+      - linux-headers-{{ ansible_kernel }}
+    state: latest
+    update_cache: yes
+
+- name: Update system
+  apt:
+    upgrade: yes
+    update_cache: yes
+    state: latest

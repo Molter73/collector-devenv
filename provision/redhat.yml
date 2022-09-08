@@ -1,0 +1,15 @@
+- name: Install utilities
+  dnf:
+    name:
+      - make
+      - jq
+      - wget
+      - golang
+      - kernel-devel
+      - origin-clients
+    state: latest
+
+- name: Update system
+  dnf:
+    name: "*"
+    state: latest

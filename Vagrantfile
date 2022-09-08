@@ -27,7 +27,7 @@ Vagrant.configure("2") do |c|
     end
 
     fedora.vm.provision 'ansible' do |ansible|
-      ansible.playbook = 'provision.yml'
+      ansible.playbook = 'provision/provision.yml'
     end
   end
 
@@ -51,7 +51,7 @@ Vagrant.configure("2") do |c|
     end
 
     ubuntu.vm.provision 'ansible' do |ansible|
-      ansible.playbook = 'provision.yml'
+      ansible.playbook = 'provision/provision.yml'
     end
   end
 end
