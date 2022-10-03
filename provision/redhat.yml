@@ -7,6 +7,7 @@
       - golang
       - kernel-devel
       - origin-clients
+      - socat
     state: latest
 
 - name: Update system
