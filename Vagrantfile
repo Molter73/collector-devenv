@@ -32,7 +32,7 @@ Vagrant.configure("2") do |c|
   end
 
   c.vm.define 'ubuntu' do |ubuntu|
-    ubuntu.vm.box = 'ubuntu/focal64'
+    ubuntu.vm.box = 'ubuntu/jammy64'
     ubuntu.vm.hostname = 'ubuntu'
 
     ubuntu.vm.synced_folder "#{go_path}/src/" ,"#{go_path}/src/"

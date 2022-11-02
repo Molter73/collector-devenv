@@ -54,7 +54,7 @@
         mode: 0755
 
     - name: Install k3s
-      shell: /tmp/k3s-install.sh --docker
+      shell: INSTALL_K3S_VERSION=v1.24.7+k3s1 /tmp/k3s-install.sh --docker
 
     - name: Remove install script
       file:
