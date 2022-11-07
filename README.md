@@ -28,7 +28,7 @@ CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
 ```
 
 ## Accessing the k3s cluster from the host
-The k3s installation will copy the configuration file required to access the k3s cluster in a file named `k3s.yaml`, I would advice you copy that file somewhere like `~/.kube/k3s.yaml`. Once copied, edit the line defining the `server` to use the public IP of your VM:
+You can find the configuration for accessing the cluster under `/etc/rancher/k3s/k3s.yaml`, I would advice you copy that file somewhere like `~/.kube/k3s.yaml`. Once copied, edit the line defining the `server` to use the public IP of your VM:
 ```yaml
 - cluster:
     server: https://192.168.56.10:6443

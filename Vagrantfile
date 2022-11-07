@@ -3,7 +3,7 @@ home_path = ENV['HOME']
 
 Vagrant.configure("2") do |c|
   c.vm.define 'fedora', primary: true do |fedora|
-    fedora.vm.box = 'fedora/35-cloud-base'
+    fedora.vm.box = 'fedora/36-cloud-base'
     fedora.vm.hostname = 'fedora'
 
     fedora.vm.synced_folder "#{go_path}/src/" ,"#{go_path}/src/",

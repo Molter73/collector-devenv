@@ -60,9 +60,3 @@
       file:
         path: /tmp/k3s-install.sh
         state: absent
-
-    - name: Copy k3s config file
-      copy:
-        src: /etc/rancher/k3s/k3s.yaml
-        dest: "{{ playbook_dir }}/k3s.yaml"
-        remote_src: yes

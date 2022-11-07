@@ -8,6 +8,7 @@
       - kernel-devel
       - origin-clients
       - socat
+      - NetworkManager-initscripts-ifcfg-rh
     state: latest
 
 - name: Update system
