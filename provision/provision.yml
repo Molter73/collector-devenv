@@ -37,10 +37,15 @@
         path: /tmp/docker-install.sh
         state: absent
 
-    - name: Configure and enable docker
+    - name: Configure docker
       shell: |
         usermod -aG docker vagrant
-        systemctl enable --now docker
+
+    - name: Enable docker
+      systemd:
+        name: docker
+        state: started
+        enabled: true
 
 - name: Install k3s
   hosts: fedora
