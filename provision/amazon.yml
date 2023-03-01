@@ -1,0 +1,31 @@
+---
+- name: Basic provisioning
+  hosts: all
+  become: true
+
+  tasks:
+  - name: Install 5.10 kernel and docker
+    shell: amazon-linux-extras install -y kernel-5.10 docker
+
+  - name: Configure docker
+    shell: |
+      usermod -aG docker vagrant
+
+  - name: Run docker on boot
+    systemd:
+      name: docker
+      state: started
+      enabled: true
+
+  - name: Install utilities
+    yum:
+      name:
+      - make
+      - golang
+      - wget
+      state: latest
+
+  - name: Update system
+    yum:
+      name: "*"
+      state: latest
