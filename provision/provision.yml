@@ -38,8 +38,10 @@
         state: absent
 
     - name: Configure docker
-      shell: |
-        usermod -aG docker vagrant
+      user:
+        name: vagrant
+        groups: docker
+        append: true
 
     - name: Enable docker
       systemd:
@@ -48,7 +50,7 @@
         enabled: true
 
 - name: Install k3s
-  hosts: fedora
+  hosts: all
   become: true
 
   tasks:

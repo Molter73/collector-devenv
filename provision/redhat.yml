@@ -15,3 +15,8 @@
   dnf:
     name: "*"
     state: latest
+
+- name: Use vi as editor
+  lineinfile:
+    dest: /home/vagrant/.bash_profile
+    line: export EDITOR=vi
