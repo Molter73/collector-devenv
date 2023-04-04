@@ -6,7 +6,7 @@
       - wget
       - golang
       - kernel-devel
-      - origin-clients
+      - kubectl
       - socat
       - NetworkManager-initscripts-ifcfg-rh
     state: latest

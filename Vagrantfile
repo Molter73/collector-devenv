@@ -23,7 +23,7 @@ Vagrant.configure("2") do |c|
       vbox.gui = false
       vbox.name = 'fedora'
       vbox.cpus = 6
-      vbox.memory = 8192
+      vbox.memory = 16384
       vbox.customize ['modifyvm', :id, '--groups', '/devenv']
       vbox.customize ['guestproperty', 'set', :id, '/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold', 1000]
     end
@@ -34,7 +34,7 @@ Vagrant.configure("2") do |c|
   end
 
   c.vm.define 'ubuntu' do |ubuntu|
-    ubuntu.vm.box = 'ubuntu/focal64'
+    ubuntu.vm.box = 'ubuntu/jammy64'
     ubuntu.vm.hostname = 'ubuntu'
 
     synced_folder(ubuntu, "#{go_path}/src/" ,"#{go_path}/src/")
@@ -47,7 +47,7 @@ Vagrant.configure("2") do |c|
       vbox.gui = false
       vbox.name = 'ubuntu'
       vbox.cpus = 6
-      vbox.memory = 8192
+      vbox.memory = 16384
       vbox.customize ['modifyvm', :id, '--groups', '/devenv']
       vbox.customize ['guestproperty', 'set', :id, '/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold', 1000]
     end
