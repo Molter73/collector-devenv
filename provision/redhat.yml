@@ -18,7 +18,11 @@
       - golang
       - kernel-devel
       - kubectl
+      - libbpf-devel
       - socat
+      - podman
+      - podman-docker
+      - podman-remote
       - NetworkManager-initscripts-ifcfg-rh
     state: latest
 
@@ -26,6 +30,38 @@
   dnf:
     name: "*"
     state: latest
+
+- name: Silence podman warning on docker emulation
+  file:
+    path: /etc/containers/nodocker
+    state: touch
+    mode: u=rw,g=r,o=r
+
+- name: Enable podman API
+  systemd:
+    name: podman.socket
+    enabled: true
+    state: started
+
+- name: Add authorized key for root user
+  ansible.posix.authorized_key:
+    user: root
+    state: present
+    exclusive: true
+    key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/fedora38.pub') }}"
+
+- name: Enable Root Login
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^PermitRootLogin'
+    line: "PermitRootLogin yes"
+    state: present
+    backup: yes
+
+- name: Restart sshd
+  systemd:
+    name: sshd
+    state: restarted
 
 - name: Use vi as editor
   lineinfile:

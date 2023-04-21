@@ -10,7 +10,7 @@ end
 
 Vagrant.configure("2") do |c|
   c.vm.define 'fedora', primary: true do |fedora|
-    fedora.vm.box = 'fedora/37-cloud-base'
+    fedora.vm.box = 'fedora/38-cloud-base'
     fedora.vm.hostname = 'fedora'
 
     synced_folder(fedora, "#{go_path}/src/", "#{go_path}/src/")
