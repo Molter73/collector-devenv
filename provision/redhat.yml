@@ -23,7 +23,6 @@
       - podman
       - podman-docker
       - podman-remote
-      - NetworkManager-initscripts-ifcfg-rh
     state: latest
 
 - name: Update system
@@ -43,12 +42,19 @@
     enabled: true
     state: started
 
+- name: Add authorized key for user
+  ansible.posix.authorized_key:
+    user: vagrant
+    state: present
+    exclusive: true
+    key: "{{ lookup('file', lookup('env','HOME') + '/.var/qemu/fedora/id_rsa.pub') }}"
+
 - name: Add authorized key for root user
   ansible.posix.authorized_key:
     user: root
     state: present
     exclusive: true
-    key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/fedora38.pub') }}"
+    key: "{{ lookup('file', lookup('env','HOME') + '/.var/qemu/fedora/id_rsa.pub') }}"
 
 - name: Enable Root Login
   lineinfile:
@@ -62,6 +68,22 @@
   systemd:
     name: sshd
     state: restarted
+
+- name: Mount repositories
+  ansible.posix.mount:
+    src: 192.168.56.1:{{ lookup('env','GOPATH') + '/src' }}
+    path: "{{ lookup('env','GOPATH') + '/src' }}"
+    opts: defaults
+    state: mounted
+    fstype: nfs
+
+- name: Mount artifacts
+  ansible.posix.mount:
+    src: 192.168.56.1:{{ lookup('env','HOME') + '/artifacts' }}
+    path: /artifacts
+    opts: defaults
+    state: mounted
+    fstype: nfs
 
 - name: Use vi as editor
   lineinfile:
