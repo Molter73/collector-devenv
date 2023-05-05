@@ -24,3 +24,10 @@ sudo qemu-system-x86_64 -cpu host,-pdpe1gb -accel hvf -smp 6 -m 8192 \
     -device virtio-net-pci,netdev=net0 \
     -display none -nographic \
     -pidfile "${HOME}/.var/qemu/pidfile"
+
+echo "Waiting for the system to come online..."
+if nc -zw 0 192.168.56.2 22 &> /dev/null; then
+    echo "System up and ready to go!"
+else
+    echo >&2 "Failed to connect to remote system"
+fi
