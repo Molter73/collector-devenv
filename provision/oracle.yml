@@ -1,0 +1,57 @@
+# Based on https://blogs.oracle.com/blogbypuneeth/post/a-simple-guide-to-docker-installation-on-oracle-linux-75-updated-oct-2019
+---
+- name: Oracle provisioning
+  hosts: all
+  become: true
+
+  tasks:
+  - name: Install yum-utils
+    yum:
+      name:
+      - yum-utils
+      state: latest
+
+  - name: Enable OL7_UEKR6 repository
+    shell: yum-config-manager --enable ol7_UEKR6
+
+  - name: Enable ol7_latest repository
+    shell: yum-config-manager --enable ol7_latest
+
+  - name: Enable ol7_optional_latest repository
+    shell: yum-config-manager --enable ol7_optional_latest
+
+  - name: Enable ol7_addons repository
+    shell: yum-config-manager --enable ol7_addons
+
+  - name: Enable golang installation
+    yum:
+      name:
+      - oracle-golang-release-el7
+      state: latest
+
+  - name: Install dependencies
+    yum:
+      name:
+      - make
+      - git
+      - golang
+      - docker-engine
+      - kernel-uek
+      state: latest
+
+  - name: Update system
+    yum:
+      name: "*"
+      state: latest
+
+  - name: Configure docker
+    user:
+      name: vagrant
+      groups: docker
+      append: true
+
+  - name: Enable docker
+    systemd:
+      name: docker
+      state: started
+      enabled: true

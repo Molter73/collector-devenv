@@ -56,4 +56,29 @@ Vagrant.configure("2") do |c|
       ansible.playbook = 'provision/provision.yml'
     end
   end
+
+  c.vm.define 'oracle', primary: true do |oracle|
+    oracle.vm.box = 'generic/oracle7'
+    oracle.vm.hostname = 'oracle'
+
+    synced_folder(oracle, "#{go_path}/src/", "#{go_path}/src/")
+    synced_folder(oracle, "#{home_path}/artifacts/", "/artifacts/")
+
+    oracle.vm.network 'private_network', ip: '192.168.56.100'
+
+    # VBox specific configuration
+    oracle.vm.provider 'virtualbox' do |vbox|
+      vbox.gui = false
+      vbox.name = 'oracle'
+      vbox.cpus = 6
+      vbox.memory = 16384
+      vbox.customize ['modifyvm', :id, '--groups', '/devenv']
+      vbox.customize ['guestproperty', 'set', :id, '/VirtualBox/GuestAdd/VBoxService/--timesync-set-threshold', 1000]
+    end
+
+    oracle.vm.provision 'ansible' do |ansible|
+      ansible.verbose = 'v'
+      ansible.playbook = 'provision/oracle.yml'
+    end
+  end
 end
