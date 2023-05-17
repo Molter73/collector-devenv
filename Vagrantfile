@@ -58,7 +58,7 @@ Vagrant.configure("2") do |c|
   end
 
   c.vm.define 'oracle', primary: true do |oracle|
-    oracle.vm.box = 'generic/oracle7'
+    oracle.vm.box = 'roboxes/oracle7'
     oracle.vm.hostname = 'oracle'
 
     synced_folder(oracle, "#{go_path}/src/", "#{go_path}/src/")
