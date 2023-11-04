@@ -37,8 +37,8 @@ Vagrant.configure("2") do |c|
     ubuntu.vm.box = 'ubuntu/jammy64'
     ubuntu.vm.hostname = 'ubuntu'
 
-    synced_folder(ubuntu, "#{go_path}/src/" ,"#{go_path}/src/")
-    ubuntu.vm.synced_folder "#{home_path}/artifacts/", "/artifacts/"
+    #synced_folder(ubuntu, "#{go_path}/src/" ,"#{go_path}/src/")
+    #ubuntu.vm.synced_folder "#{home_path}/artifacts/", "/artifacts/"
 
     ubuntu.vm.network 'private_network', ip: '192.168.56.11'
 

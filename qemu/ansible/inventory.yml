@@ -3,4 +3,4 @@ all:
     fedora:
       ansible_host: 192.168.56.2
       ansible_user: vagrant
-      ansible_ssh_private_key_file: /Users/mmoltras/.ssh/fedora38
+      ansible_ssh_private_key_file: "{{ lookup('file', lookup('env','HOME') + '/.var/qemu/fedora/id_rsa') }}"
