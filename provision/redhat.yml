@@ -1,28 +1,20 @@
-- name: Setup kubernetes repo
-  copy:
-    dest: /etc/yum.repos.d/kubernetes.repo
-    content: |
-      [kubernetes]
-      name=Kubernetes
-      baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-$basearch
-      enabled=1
-      gpgcheck=1
-      gpgkey=https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
-
 - name: Install utilities
   dnf:
     name:
+      - gcc-c++
+      - clang
+      - ccache
+      - glibc-devel.i686
+      - libcap-devel
+      - bpftool
+      - git
       - make
-      - jq
+      - cmake
       - wget
-      - golang
       - kernel-devel
-      - kubectl
       - libbpf-devel
-      - socat
-      - podman
-      - podman-docker
-      - podman-remote
+      - elfutils-libelf-devel
+      - perl-IPC-Cmd
       - NetworkManager-initscripts-ifcfg-rh
     state: latest
 
@@ -31,37 +23,42 @@
     name: "*"
     state: latest
 
-- name: Silence podman warning on docker emulation
-  file:
-    path: /etc/containers/nodocker
-    state: touch
-    mode: u=rw,g=r,o=r
+- name: which ccache
+  ansible.builtin.command: which ccache
+  register: ccache_path
 
-- name: Enable podman API
-  systemd:
-    name: podman.socket
-    enabled: true
-    state: started
+- name: Create local bin directory
+  ansible.builtin.file:
+    path: /home/vagrant/.local/bin
+    state: directory
+    owner: vagrant
+    group: vagrant
 
-- name: Add authorized key for root user
-  ansible.posix.authorized_key:
-    user: root
-    state: present
-    exclusive: true
-    key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/fedora38.pub') }}"
+- name: gcc-ccache symlink
+  ansible.builtin.file:
+    src: "{{ ccache_path.stdout }}"
+    dest: /home/vagrant/.local/bin/gcc
+    owner: vagrant
+    group: vagrant
+    state: link
 
-- name: Enable Root Login
-  lineinfile:
-    dest: /etc/ssh/sshd_config
-    regexp: '^PermitRootLogin'
-    line: "PermitRootLogin yes"
-    state: present
-    backup: yes
+- name: g++-ccache symlink
+  ansible.builtin.file:
+    src: "{{ ccache_path.stdout }}"
+    dest: /home/vagrant/.local/bin/g++
+    owner: vagrant
+    group: vagrant
+    state: link
 
-- name: Restart sshd
-  systemd:
-    name: sshd
-    state: restarted
+- name: Add $HOME/.local/bin to $PATH
+  ansible.builtin.lineinfile:
+    path: /home/vagrant/.bash_profile
+    line: PATH="/home/vagrant/.local/bin:$PATH"
+
+- name: Don't use ccache by default
+  ansible.builtin.lineinfile:
+    path: /home/vagrant/.bash_profile
+    line: export CCACHE_DISABLE=true
 
 - name: Use vi as editor
   lineinfile:
