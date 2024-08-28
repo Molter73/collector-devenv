@@ -1,8 +1,10 @@
 - name: Install utilities
   dnf:
     name:
+      - automake
       - gcc-c++
       - clang
+      - llvm
       - ccache
       - glibc-devel.i686
       - libcap-devel
@@ -14,7 +16,7 @@
       - kernel-devel
       - libbpf-devel
       - elfutils-libelf-devel
-      - perl-IPC-Cmd
+      - perl
       - NetworkManager-initscripts-ifcfg-rh
     state: latest
 
